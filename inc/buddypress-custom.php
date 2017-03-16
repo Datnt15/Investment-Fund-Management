@@ -1,56 +1,52 @@
 <?php 
 
 
-add_action('bp_setup_nav', 'bp_profile_menu_freelancing', 301 );
+add_action('bp_setup_nav', 'bp_profile_investment_fund', 301 );
 
-function bp_profile_menu_freelancing() {
+function bp_profile_investment_fund() {
     global $bp;
     bp_core_new_nav_item(
         array(
-            'name' => 'My Work',
-            'slug' => WORKSPACE, 
+            'name' => 'Investment Fund',
+            'slug' => INVESTMENT, 
             'position' => 11, 
             'default_subnav_slug' => 'published', // We add this submenu item below 
-            'screen_function' => 'free_lancing_page'
+            'screen_function' => 'render_investment_fund_page'
         )
     );
 
     bp_core_new_nav_item(
         array(
-            'name' => 'Reviews',
-            'slug' => REVIEWS, 
+            'name' => 'Portfolios',
+            'slug' => PORTFOLIOS, 
             'position' => 11, 
-            'default_subnav_slug' => 'published', // We add this submenu item below 
-            'screen_function' => 'user_review_page'
+            'default_subnav_slug' => INVESTMENT, // We add this submenu item below 
+            'screen_function' => 'render_portfolios_page'
         )
     );
 }
 
-function free_lancing_page(){
-    //add title and content here - last is to call the members plugin.php template
-    //add_action( 'bp_template_title', 'free_lancing_page_title' );
-    add_action( 'bp_template_content', 'free_lancing_page_content' );
+function render_investment_fund_page(){
+    add_action( 'bp_template_content', 'investment_fund_page' );
     bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
 }
 
-function user_review_page(){
-    add_action( 'bp_template_content', 'user_review_page_content' );
+function render_portfolios_page(){
+    add_action( 'bp_template_content', 'portfolios_page_content' );
     bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
 }
 
-function free_lancing_page_content() { 
+function investment_fund_page() { 
     $uid = bp_displayed_user_id();
     
-    $is_author = $uid==get_current_user_id();
-    $skills = get_skill_by_uid($uid);
-    require TEMPLATE.'freelancing_page.php';
+    $is_author = $uid == get_current_user_id();
+    require TEMPLATE.'investment_fund_page.php';
 }
 
 
-function user_review_page_content() { 
+function portfolios_page_content() { 
     $uid = bp_displayed_user_id();
-    $reviews = get_all_review_by_user_id($uid);
-    require TEMPLATE.'reviews_page.php';
+    require TEMPLATE.'portfolios_page.php';
 }
 //buddypress cover size
 

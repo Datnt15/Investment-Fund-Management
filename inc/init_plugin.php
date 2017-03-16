@@ -1,14 +1,14 @@
 <?php 
  
 
-add_action( 'init', 'buddyfree_load_textdomain' );
+add_action( 'init', 'investment_fund_load_textdomain' );
 /**
  * Load plugin textdomain.
  *
  * @since 1.0.0
  */
-function buddyfree_load_textdomain() {
-    load_plugin_textdomain( 'buddyfree', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' ); 
+function investment_fund_load_textdomain() {
+    load_plugin_textdomain( 'investment_fund', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' ); 
     ob_start();
 }
 
@@ -59,86 +59,36 @@ function register_js_script() {
 
 add_action("wp_enqueue_scripts", "register_js_script");
 
-
-// Add find freelancer page
-add_action( 'after_setup_theme', 'add_search_page' );
-
-function add_search_page(){
-    if ( ! function_exists( 'post_exists' ) ) {
-        require_once( ABSPATH . 'wp-admin/includes/post.php' );
-    }
-
-    
-    if (!post_exists('Find Freelancer')) {
-        wp_insert_post( array(
-            'post_title'    =>  'Find Freelancer' ,
-            'post_type'     => 'page',
-            'post_content'  => '[find-freelancers]',
-            'post_status'   => 'publish',
-            'post_author'   => 1
-        ) );
-    }
-
-
-    if (!post_exists('Hire')) {
-        wp_insert_post( array(
-            'post_title'    =>  'Hire',
-            'post_type'     => 'page',
-            'post_content'  => '[add-project]',
-            'post_status'   => 'publish',
-            'post_author'   => 1
-        ) );
-    }
-
-    if (!post_exists('Registration')) {
-        wp_insert_post( array(
-            'post_title'    =>  'Registration',
-            'post_type'     => 'page',
-            'post_content'  => '[registration]',
-            'post_status'   => 'publish',
-            'post_author'   => 1
-        ) );
-    }
-}
-
-// Add user roles for freelancer and employee.
-function add_roles_on_plugin_activation() {
-   add_role( 'freelancer', 'Freelancer', array( 'read' => true, 'level_0' => true ) );
-   add_role( 'employee', 'Employee', array( 'read' => true, 'level_0' => true ) );
-}
-register_activation_hook( __FILE__, 'add_roles_on_plugin_activation' );
-
-
-// Add project post type
+// Add investment post type
 
 /*
 * Creating a function to create our CPT
 */
 
-function buddyfree_add_project_post_type() {
+function investment_fund_add_investment_post_type() {
 
 // Set UI labels for Custom Post Type
     $labels = array(
-        'name'                => _x( 'Projects', 'Post Type General Name', 'buddyfree' ),
-        'singular_name'       => _x( 'Project', 'Post Type Singular Name', 'buddyfree' ),
-        'menu_name'           => __( 'Projects', 'buddyfree' ),
-        // 'parent_item_colon'   => __( 'Parent Project', 'buddyfree' ),
-        'all_items'           => __( 'All Projects', 'buddyfree' ),
-        'view_item'           => __( 'View Project', 'buddyfree' ),
-        'add_new_item'        => __( 'Add New Project', 'buddyfree' ),
-        'add_new'             => __( 'Add New', 'buddyfree' ),
-        'edit_item'           => __( 'Edit Project', 'buddyfree' ),
-        'update_item'         => __( 'Update Project', 'buddyfree' ),
-        'search_items'        => __( 'Search Project', 'buddyfree' ),
-        'not_found'           => __( 'Not Found', 'buddyfree' ),
-        'not_found_in_trash'  => __( 'Not found in Trash', 'buddyfree' ),
+        'name'                => _x( 'Investments Fund', 'Post Type General Name', 'investment_fund' ),
+        'singular_name'       => _x( 'Investment Fund', 'Post Type Singular Name', 'investment_fund' ),
+        'menu_name'           => __( 'investments', 'investment_fund' ),
+        // 'parent_item_colon'   => __( 'Parent investment', 'investment_fund' ),
+        'all_items'           => __( 'All investments', 'investment_fund' ),
+        'view_item'           => __( 'View investment', 'investment_fund' ),
+        'add_new_item'        => __( 'Add New investment', 'investment_fund' ),
+        'add_new'             => __( 'Add New', 'investment_fund' ),
+        'edit_item'           => __( 'Edit investment', 'investment_fund' ),
+        'update_item'         => __( 'Update investment', 'investment_fund' ),
+        'search_items'        => __( 'Search investment', 'investment_fund' ),
+        'not_found'           => __( 'Not Found', 'investment_fund' ),
+        'not_found_in_trash'  => __( 'Not found in Trash', 'investment_fund' ),
     );
     
 // Set other options for Custom Post Type
     
     $args = array(
-        'label'               => __( 'project', 'buddyfree' ),
-        'description'         => __( 'Project news and reviews', 'buddyfree' ),
+        'label'               => __( 'investment', 'investment_fund' ),
+        'description'         => __( 'investment news and reviews', 'investment_fund' ),
         'labels'              => $labels,
         // Features this CPT supports in Post Editor
         'supports'            => array( 'title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'revisions', 'custom-fields', ),
@@ -159,7 +109,7 @@ function buddyfree_add_project_post_type() {
     );
     
     // Registering your Custom Post Type
-    register_post_type( 'projects', $args );
+    register_post_type( 'investments', $args );
 
 }
 
@@ -168,7 +118,7 @@ function buddyfree_add_project_post_type() {
 * unnecessarily executed. 
 */
 
-add_action( 'init', 'buddyfree_add_project_post_type', 0 );
+add_action( 'init', 'investment_fund_add_investment_post_type', 0 );
 
 
 /* Filter the single_template with our custom function*/
@@ -178,9 +128,9 @@ function my_custom_template($single) {
     global $wp_query, $post;
 
     /* Checks for single template by post type */
-    if ($post->post_type == "projects"){
-        if(file_exists(TEMPLATE . '/single-project.php'))
-            return TEMPLATE . '/single-project.php';
+    if ($post->post_type == "investments"){
+        if(file_exists(TEMPLATE . '/single-investment.php'))
+            return TEMPLATE . '/single-investment.php';
     }
     return $single;
 }

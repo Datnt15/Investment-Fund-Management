@@ -1,7 +1,26 @@
 <?php 
 function create_table(){
     global $wpdb;
-    
+    $sql = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}skill` (
+        `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+        `skill_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+        `skill_desc` TEXT COLLATE utf8_unicode_ci NOT NULL,
+        `skill_cat_id` INT(11) NOT NULL,
+        `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
+    $wpdb->query($sql);
+
+    $sql = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}skill_cat` (
+        `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+        `cat_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+        `cat_desc` TEXT  COLLATE utf8_unicode_ci NOT NULL,
+        `parent_id` INT(11) NOT NULL,
+        `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
+    $wpdb->query($sql);
+
     $sql = "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}schedule` ( `schedule_id` INT NOT NULL AUTO_INCREMENT , `uid` INT NOT NULL , `time`  VARCHAR(255) NULL, `day`  VARCHAR(20) NOT NULL , `is_hired` VARCHAR(20) NOT NULL DEFAULT '0', `hirer_id` INT NOT NULL DEFAULT '0', `list_hirers` VARCHAR(255) NULL, `date_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`schedule_id`)) ENGINE = InnoDB;";
     $wpdb->query($sql);
 
@@ -116,4 +135,4 @@ function get_rate($to_id){
     return $wpdb->get_var("SELECT ROUND(AVG(rate), 1) FROM `{$wpdb->prefix}buddy_reviews` WHERE to_id={$to_id} ;");
 }
 
-create_table();
+// create_table();
